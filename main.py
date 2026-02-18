@@ -31,27 +31,29 @@ def largest_of_3(numbers):
 
 def water_bucket_volume(numbers):
     total = 0
-    bars = [0]
-    next_highest = 0
-    end_idx = 0
+    start = 0
+    end = 0
 
-    for n in numbers:
-        if n >= bars[0]:
-            for j in range(1, len(bars)):
-                total += bars[0] - bars[j]
-            bars.clear()
-            bars.append(n)
-            next_highest = 0
-            end_idx = 0
+    while start < len(numbers) - 1:
+        if numbers[start + 1] < numbers[start]:
+            end = start + 1
+
+            # find next highest bar
+            for i in range(start + 1, len(numbers)):
+                if numbers[i] > numbers[end]:
+                    end = i
+
+            ceiling = numbers[start]
+            if (numbers[end]) < ceiling:
+                ceiling = numbers[end]
+
+            for i in range(start + 1, end):
+                if (numbers[i] < ceiling):
+                    total += ceiling - numbers[i]
+
+            start = end
         else:
-            bars.append(n)
-            if n > next_highest:
-                next_highest = n
-                end_idx = len(bars)
-
-    if next_highest > 0:
-        for i in range(1, end_idx):
-            total += next_highest - bars[i]
+            start += 1
 
     return total
 
@@ -89,4 +91,12 @@ if __name__ == "__main__":
     numbers = [1, 2, 4, 3, 3, 5, 0, 1, 0, 2, 1, 0]
     ret = water_bucket_volume(numbers)
     assert(ret == 7)
+
+    numbers = [1, 3, 5, 3, 1, 2, 1, 0, 2, 1, 0]
+    ret = water_bucket_volume(numbers)
+    assert(ret == 4)
+
+    numbers = [0, 1, 3, 1, 2, 1, 0, 1, 0]
+    ret = water_bucket_volume(numbers)
+    assert(ret == 2)
 
